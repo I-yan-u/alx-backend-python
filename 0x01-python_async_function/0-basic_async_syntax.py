@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 """ Async function """
 
-import asyncio as asyn
+import asyncio
 import random
 
 
-async def wait_random(max_delay: int=10) -> float:
+async def wait_random(max_delay: int = 10) -> float:
     """ Await random async function """
     sleeptime = random.uniform(0, max_delay)
-    await asyn.sleep(sleeptime)
+    await asyncio.sleep(sleeptime)
     return sleeptime
