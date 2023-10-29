@@ -3,10 +3,9 @@
 Unittest file
 """
 import unittest
-import utils
 from utils import access_nested_map, get_json, memoize
 from parameterized import parameterized
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
 
 
 class TestAccessNestedMap(unittest.TestCase):
