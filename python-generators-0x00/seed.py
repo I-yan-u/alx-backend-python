@@ -29,8 +29,8 @@ def create_database(connection):
 def connect_to_prodev():
     mydb = mysql.connector.connect(
     host="localhost",
-    user="iyanu",
-    password="Iyanuajimobi12.",
+    user=sys.argv[1],
+    password=sys.argv[2],
     database='ALX_prodev'
     )
     return mydb
