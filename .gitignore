@@ -1,3 +1,6 @@
 *.pyc*
 test.py
 main.*
+setting*
+*.env
+*.csv
