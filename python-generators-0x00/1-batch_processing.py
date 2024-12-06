@@ -14,6 +14,4 @@ def stream_users_in_batches(batch_size):
 
 def batch_processing(batch_size):
     for rows in stream_users_in_batches(batch_size):
-        if rows[-1] <= 25:
-            continue
-        print(rows)
+        return rows if rows[-1] > 25 else ...
