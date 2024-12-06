@@ -4,3 +4,4 @@ main.*
 setting*
 *.env
 *.csv
+*.db
