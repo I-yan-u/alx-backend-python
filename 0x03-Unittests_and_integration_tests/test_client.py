@@ -32,7 +32,6 @@ class TestGithubOrgClient(unittest.TestCase):
             'https://api.github.com/orgs/{}'.format(org)
         )
 
-
     def test_public_repos_url(self) -> None:
         """_summary_
         """
