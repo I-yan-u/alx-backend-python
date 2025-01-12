@@ -1,62 +1,34 @@
 from rest_framework import serializers
-from .models import CustomUser, Conversation, Message
+from .models import Conversation, Message, User
 
-
-class CustomUserSerializer(serializers.ModelSerializer):
+class UserSerializer(serializers.ModelSerializer):
     full_name = serializers.SerializerMethodField()
-
     class Meta:
-        model = CustomUser
-        fields = [
-            "user_id",
-            "username",
-            "email",
-            "first_name",
-            "last_name",
-            "phone_number",
-            "role",
-            "full_name",
-        ]
+        model = User
+        fields = '__all__'
 
     def get_full_name(self, obj):
+        """Returns the full name of the user."""
         return f"{obj.first_name} {obj.last_name}"
 
 
 class MessageSerializer(serializers.ModelSerializer):
-    sender_name = serializers.CharField(
-        source="sender.username", read_only=True
-    )
-
+    sender_name = serializers.CharField(source='sender.first_name', read_only=True)
     class Meta:
         model = Message
-        fields = [
-            "message_id",
-            "sender",
-            "sender_name",
-            "message_body",
-            "sent_at",
-        ]
+        fields = '__all__'
 
     def validate_message_body(self, value):
+        """Custom validation for the message body."""
         if len(value) < 1:
-            raise serializers.ValidationError("Message body can not be empty.")
+            raise serializers.ValidationError("Message body cannot be empty.")
         return value
 
 
 class ConversationSerializer(serializers.ModelSerializer):
-    participants = CustomUserSerializer(many=True, read_only=True)
     messages = MessageSerializer(many=True, read_only=True)
-    message_count = serializers.SerializerMethodField()
 
     class Meta:
         model = Conversation
-        fields = [
-            "conversation_id",
-            "participants_id",
-            "messages",
-            "message_count",
-            "created_at",
-        ]
+        fields = '__all__'
 
-    def get_message_count(self, obj):
-        return obj.messages.count()
