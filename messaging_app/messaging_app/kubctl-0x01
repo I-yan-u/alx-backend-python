@@ -1,0 +1,38 @@
+#!/bin/bash
+
+set -e
+
+if ! command -v kubectl &> /dev/null; then
+  echo "Error: kubectl is not installed."
+  exit 1
+fi
+
+if ! command -v wrk &> /dev/null; then
+  echo "Error: wrk is not installed."
+  exit 1
+fi
+
+DEPLOYMENT_NAME="django-app-deployment"
+echo "Scaling the deployment '$DEPLOYMENT_NAME' to 3 replicas..."
+kubectl scale deployment "$DEPLOYMENT_NAME" --replicas=3
+echo "Scaling initiated."
+
+echo "Verifying the running pods..."
+kubectl get pods --selector=app="$DEPLOYMENT_NAME" --output=wide
+echo "Pods are running."
+
+SERVICE_NAME="django-app-service"
+SERVICE_IP=$(kubectl get svc "$SERVICE_NAME" -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+
+if [ -z "$SERVICE_IP" ]; then
+  echo "Error: Could not retrieve the service IP. Ensure the service has an external IP configured."
+  exit 1
+fi
+
+echo "Performing load testing on the app at http://$SERVICE_IP:8000..."
+wrk -t4 -c100 -d30s http://"$SERVICE_IP":8000/
+echo "Load testing completed."
+
+echo "Monitoring resource usage..."
+kubectl top pods --selector=app="$DEPLOYMENT_NAME"
+echo "Resource usage monitoring completed."
