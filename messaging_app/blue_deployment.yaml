@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: django-app-blue
+  labels:
+    app: django-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: django-app
+      version: blue
+  template:
+    metadata:
+      labels:
+        app: django-app
+        version: blue
+    spec:
+      containers:
+      - name: django-app
+        image: malakehab2003/messaging_app-web:2.0  # Updated image version
+        ports:
+        - containerPort: 8000
+        env:
+        - name: DJANGO_SETTINGS_MODULE
+          value: "messaging_app.settings"
+        - name: DEBUG
+          value: "False"
+        - name: ALLOWED_HOSTS
+          value: "*"
