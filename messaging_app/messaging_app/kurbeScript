@@ -1,0 +1,37 @@
+#!/bin/bash
+
+check_command_installed() {
+    if ! command -v "$1" &> /dev/null; then
+        echo "Error: $1 is not installed. Please install it and try again."
+        exit 1
+    fi
+}
+
+check_command_installed minikube
+check_command_installed kubectl
+
+echo "Starting Minikube cluster..."
+minikube start
+
+if [ $? -ne 0 ]; then
+    echo "Failed to start Minikube cluster. Please check the logs and try again."
+    exit 1
+fi
+
+echo "Verifying cluster status..."
+kubectl cluster-info
+
+if [ $? -ne 0 ]; then
+    echo "Failed to verify cluster status. Please check the logs and try again."
+    exit 1
+fi
+
+echo "Retrieving available pods..."
+kubectl get pods
+
+if [ $? -ne 0 ]; then
+    echo "Failed to retrieve pods. Please check the logs and try again."
+    exit 1
+fi
+
+echo "Script completed successfully!"
